@@ -20,7 +20,7 @@ services:
         hard: 65536
     volumes:
       - esdata01:/usr/share/elasticsearch/data
-      - /opt/the-hive/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
+      - /opt/the-hive-docker/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
     networks:
       hive_network:
         ipv4_address: 172.18.1.09
@@ -41,7 +41,7 @@ services:
     ports:
       - "0.0.0.0:9000:9000"
     volumes:
-      - /opt/the-hive/application.conf:/etc/thehive/application.conf
+      - /opt/the-hive-docker/application.conf:/etc/thehive/application.conf
     networks:
       hive_network:
         ipv4_address: 172.18.1.12
