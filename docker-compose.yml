@@ -1,0 +1,58 @@
+version: "2"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=0.0.0.0
+      - xpack.security.enabled=false
+      - cluster.name=hive
+      - script.inline=true
+      - thread_pool.index.queue_size=100000
+      - thread_pool.search.queue_size=100000
+      - thread_pool.bulk.queue_size=100000
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+      - /opt/the-hive/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
+    networks:
+      hive_network:
+        ipv4_address: 172.18.1.09
+  cortex:
+    image: thehiveproject/cortex:latest
+    depends_on:
+      - elasticsearch
+    ports:
+      - "0.0.0.0:9001:9001"
+    networks:
+      hive_network:
+        ipv4_address: 172.18.1.11
+  thehive:
+    image: thehiveproject/thehive:latest
+    depends_on:
+      - elasticsearch
+      - cortex
+    ports:
+      - "0.0.0.0:9000:9000"
+    volumes:
+      - /opt/the-hive/application.conf:/etc/thehive/application.conf
+    networks:
+      hive_network:
+        ipv4_address: 172.18.1.12
+    command: --cortex-port 9001 --no-config
+volumes:
+  esdata01:
+    driver: local
+networks:
+  hive_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.1.0/24
+          gateway: 172.18.1.2
