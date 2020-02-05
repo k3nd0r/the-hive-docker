@@ -22,7 +22,7 @@ services:
       - esdata01:/usr/share/elasticsearch/data
       - /opt/the-hive-docker/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
     networks:
-      hive_network:
+      security_network:
         ipv4_address: 172.18.1.09
   cortex:
     image: thehiveproject/cortex:latest
@@ -31,7 +31,7 @@ services:
     ports:
       - "0.0.0.0:9001:9001"
     networks:
-      hive_network:
+      security_network:
         ipv4_address: 172.18.1.11
   thehive:
     image: thehiveproject/thehive:latest
@@ -43,7 +43,7 @@ services:
     volumes:
       - /opt/the-hive-docker/application.conf:/etc/thehive/application.conf
     networks:
-      hive_network:
+      security_network:
         ipv4_address: 172.18.1.12
     command: --cortex-port 9001 --no-config
 volumes:
