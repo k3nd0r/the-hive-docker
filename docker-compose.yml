@@ -50,7 +50,7 @@ volumes:
   esdata01:
     driver: local
 networks:
-  hive_network:
+  security_network:
     driver: bridge
     ipam:
       config:
